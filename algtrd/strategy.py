@@ -17,19 +17,19 @@ def momentum(data, balance, koef_buy, koef_sell, day_steps):
         ticker_price = float(data[day][2])
         diff_n_day = float(data[day][2] - data[day-day_steps][2]) # today open price - nday before open price
         proc = abs(diff_n_day / float(data[day-day_steps][2]))
-        
+
         otype = 'buy' if diff_n_day > 0 else 'sell'
         fiat_balance, ticker_balance, avg_buy_price = \
-                operation(otype, proc, fiat_balance, ticker_balance, 
+                operation(otype, proc, fiat_balance, ticker_balance,
                     ticker_price, avg_buy_price, koef_buy, koef_sell)
-    
-    return cur_balance, min_balance, max_balance 
+
+    return cur_balance, min_balance, max_balance
 
 
-def operation(otype, proc, fiat_balance, ticker_balance, ticker_price, 
+def operation(otype, proc, fiat_balance, ticker_balance, ticker_price,
         avg_buy_price, koef_buy, koef_sell):
 
-    if otype == 'sell' and ticker_price > avg_buy_price:  
+    if otype == 'sell' and ticker_price > avg_buy_price:
         amount_trade = min(proc * koef_sell, 100) * ticker_balance / 100
         mode = 1
     elif otype == 'buy':
@@ -55,7 +55,7 @@ def koef_validation(data, balance):
     max_day, max_koef_buy, max_koef_sell = 10, 100, 100
     min_day, min_koef_buy, min_koef_sell = 1, 1, 1
     best_koef = [0]*3
-    
+
     total_iter = (max_day - min_day) * (max_koef_buy - min_koef_buy) * \
                 (max_koef_sell - min_koef_sell)
 
@@ -63,12 +63,12 @@ def koef_validation(data, balance):
 
     for koef_buy in range(min_koef_buy, max_koef_buy+1):
         for koef_sell in range(min_koef_sell, max_koef_sell+1):
-            for day_steps in range(min_day, max_day+1):    
+            for day_steps in range(min_day, max_day+1):
                     result, minb, maxb = momentum(data, balance, koef_buy, koef_sell, day_steps)
                     if result > max_balance:
                         max_balance = result
                         best_koef[0], best_koef[1], best_koef[2] = koef_buy, koef_sell, day_steps
-                    
+
                     progress.update()
     progress.close()
     return tuple(best_koef)
@@ -77,7 +77,7 @@ def koef_validation(data, balance):
 def sharp_koef(data, result, balance, const_profit):
     res_profit = result/balance * 100 - 100 # in %
     return (res_profit - const_profit) / np.nanstd(data, axis=0)[2]
-    
+
 
 def profit_drawdown_koef(result, balance, min_balance):
     profit = result/balance * 100 - 100 # in %

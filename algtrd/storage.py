@@ -6,7 +6,7 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('ticker')
     parser.add_argument('balance', help='Объем средств инвестирования',
-            nargs='?', default=1000)
+            nargs='?', default=1000, type=float)
     parser.add_argument('-upd', '--update', help='forced update parameters',  
             action="store_true")
     return parser.parse_args()
