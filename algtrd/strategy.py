@@ -56,8 +56,8 @@ def koef_validation(data, balance):
     min_day, min_koef_buy, min_koef_sell = 1, 1, 1
     best_koef = [0]*3
 
-    total_iter = (max_day - min_day) * (max_koef_buy - min_koef_buy) * \
-                (max_koef_sell - min_koef_sell)
+    total_iter = (max_day - min_day + 1) * (max_koef_buy - min_koef_buy + 1) * \
+                (max_koef_sell - min_koef_sell + 1)
 
     progress = tqdm(total=total_iter, desc='Progress')
 
